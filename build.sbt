@@ -31,9 +31,7 @@ lazy val commonSettings = Seq(
 
   libraryDependencies += "io.get-coursier" %%% "coursier" % "2.0.2" % "test",
 
-  libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.1" % "test",
-
-  libraryDependencies += "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1" % "test"
+  libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.2" % "test"
 )
 
 lazy val root = project.in(file("."))

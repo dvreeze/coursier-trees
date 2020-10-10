@@ -18,14 +18,16 @@ package eu.cdevreeze.cs.trees.api
 
 import coursier._
 import coursier.graph.ModuleTree
+import org.scalatest.LoneElement._
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
 /**
  * RichModuleTree test. It may require internet access, due to Coursier Resolve calls.
  *
  * @author Chris de Vreeze
  */
-class RichModuleTreeTest extends AnyFunSuite {
+class RichModuleTreeTest extends AnyFunSuite with Matchers {
 
   test("testFindDuplicateModules") {
     val yaidomResolution = Resolve()
@@ -38,7 +40,7 @@ class RichModuleTreeTest extends AnyFunSuite {
     val scalaLibraryTrees: Seq[RichModuleTree] =
       yaidomModTree.filterDescendants(_.module == mod"org.scala-lang:scala-library")
 
-    assert(scalaLibraryTrees.size == 2)
-    assert(scalaLibraryTrees.map(_.retainedVersion).toSet == Set("2.13.2"))
+    (scalaLibraryTrees.map(_.module) should have).size(2)
+    scalaLibraryTrees.map(_.retainedVersion).toSet.loneElement shouldBe "2.13.2"
   }
 }

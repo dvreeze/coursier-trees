@@ -17,7 +17,7 @@
 package eu.cdevreeze.cs.trees.internal.queryapi
 
 /**
- * Tree query API. The query method names are inspired by XPath axis names.
+ * Tree query function API. The query method names are inspired by XPath axis names.
  *
  * This query API is for trees having one type of element as its nodes. It expects trees of rather limited depths
  * (like is the case for XML trees). Its query methods are typically not stack-safe. Its query methods return
@@ -25,23 +25,21 @@ package eu.cdevreeze.cs.trees.internal.queryapi
  *
  * @author Chris de Vreeze
  */
-trait TreeQueryApi extends Any {
+trait TreeQueryFunctionApi[E] {
 
-  type E <: TreeQueryApi
+  def findAllChildren(tree: E): Seq[E]
 
-  def findAllChildren: Seq[E]
+  def findAllDescendantsOrSelf(tree: E): Seq[E]
 
-  def findAllDescendantsOrSelf: Seq[E]
+  def filterDescendantsOrSelf(tree: E, p: E => Boolean): Seq[E]
 
-  def filterDescendantsOrSelf(p: E => Boolean): Seq[E]
+  def findAllDescendants(tree: E): Seq[E]
 
-  def findAllDescendants: Seq[E]
+  def filterDescendants(tree: E, p: E => Boolean): Seq[E]
 
-  def filterDescendants(p: E => Boolean): Seq[E]
+  def findChild(tree: E, p: E => Boolean): Option[E]
 
-  def findChild(p: E => Boolean): Option[E]
+  def findDescendantOrSelf(tree: E, p: E => Boolean): Option[E]
 
-  def findDescendantOrSelf(p: E => Boolean): Option[E]
-
-  def findDescendant(p: E => Boolean): Option[E]
+  def findDescendant(tree: E, p: E => Boolean): Option[E]
 }

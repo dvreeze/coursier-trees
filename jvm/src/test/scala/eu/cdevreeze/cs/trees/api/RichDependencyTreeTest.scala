@@ -18,14 +18,16 @@ package eu.cdevreeze.cs.trees.api
 
 import coursier._
 import coursier.graph.DependencyTree
+import org.scalatest.LoneElement._
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
 /**
  * RichDependencyTree test. It may require internet access, due to Coursier Resolve calls.
  *
  * @author Chris de Vreeze
  */
-class RichDependencyTreeTest extends AnyFunSuite {
+class RichDependencyTreeTest extends AnyFunSuite with Matchers {
 
   test("testFindDuplicateModules") {
     val yaidomResolution = Resolve()
@@ -38,8 +40,8 @@ class RichDependencyTreeTest extends AnyFunSuite {
     val scalaLibraryTrees: Seq[RichDependencyTree] =
       yaidomDepTree.filterDescendants(_.dependency.module == mod"org.scala-lang:scala-library")
 
-    assert(scalaLibraryTrees.size == 2)
-    assert(scalaLibraryTrees.map(_.retainedVersion).toSet == Set("2.13.2"))
+    (scalaLibraryTrees.map(_.dependency.moduleVersion) should have).size(2)
+    scalaLibraryTrees.map(_.retainedVersion).toSet.loneElement shouldBe "2.13.2"
   }
 
   test("testFindVersionEvictions") {
@@ -53,15 +55,13 @@ class RichDependencyTreeTest extends AnyFunSuite {
     val depTreesWithEviction: Seq[RichDependencyTree] =
       yaidomDepTree.filterDescendantsOrSelf(t => t.dependency.version != t.retainedVersion)
 
-    assert(depTreesWithEviction.size == 1)
-    assert(depTreesWithEviction.head.dependency.module == mod"org.scala-lang:scala-library")
-    assert(depTreesWithEviction.head.dependency.version == "2.13.0")
-    assert(depTreesWithEviction.head.reconciledVersion == "2.13.2")
-    assert(depTreesWithEviction.head.retainedVersion == "2.13.2")
+    (depTreesWithEviction should have).size(1)
+    depTreesWithEviction.head.dependency.module shouldBe mod"org.scala-lang:scala-library"
+    depTreesWithEviction.head.dependency.version shouldBe "2.13.0"
+    depTreesWithEviction.head.reconciledVersion shouldBe "2.13.2"
+    depTreesWithEviction.head.retainedVersion shouldBe "2.13.2"
 
-    assert(
-      yaidomDepTree
-        .findDescendant(_.dependency.moduleVersion == (mod"org.scala-lang:scala-library", "2.13.2"))
-        .nonEmpty)
+    yaidomDepTree
+      .findDescendant(_.dependency.moduleVersion == (mod"org.scala-lang:scala-library", "2.13.2")) should not be empty
   }
 }
