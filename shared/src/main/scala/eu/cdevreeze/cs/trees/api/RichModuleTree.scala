@@ -24,9 +24,9 @@ import eu.cdevreeze.cs.trees.internal.moduletrees.ModuleTreeQueryApi
  *
  * @author Chris de Vreeze
  */
-final case class RichModuleTree(underlying: ModuleTree) {
+final case class RichModuleTree(underlying: ModuleTree) extends AnyVal {
 
-  private val delegate: ModuleTreeQueryApi.type = ModuleTreeQueryApi
+  import RichModuleTree.delegate
 
   def findAllDescendantsOrSelf: Seq[RichModuleTree] = {
     delegate.findAllDescendantsOrSelf(underlying).map(wrap)
@@ -61,4 +61,9 @@ final case class RichModuleTree(underlying: ModuleTree) {
   private def unwrapPredicate(p: RichModuleTree => Boolean): ModuleTree => Boolean = { (tree: ModuleTree) =>
     p(wrap(tree))
   }
+}
+
+object RichModuleTree {
+
+  private val delegate: ModuleTreeQueryApi.type = ModuleTreeQueryApi
 }

@@ -24,9 +24,9 @@ import eu.cdevreeze.cs.trees.internal.dependencytrees.DependencyTreeQueryApi
  *
  * @author Chris de Vreeze
  */
-final case class RichDependencyTree(underlying: DependencyTree) {
+final case class RichDependencyTree(underlying: DependencyTree) extends AnyVal {
 
-  private val delegate: DependencyTreeQueryApi.type = DependencyTreeQueryApi
+  import RichDependencyTree.delegate
 
   def findAllDescendantsOrSelf: Seq[RichDependencyTree] = {
     delegate.findAllDescendantsOrSelf(underlying).map(wrap)
@@ -61,4 +61,9 @@ final case class RichDependencyTree(underlying: DependencyTree) {
   private def unwrapPredicate(p: RichDependencyTree => Boolean): DependencyTree => Boolean = { (tree: DependencyTree) =>
     p(wrap(tree))
   }
+}
+
+object RichDependencyTree {
+
+  private val delegate: DependencyTreeQueryApi.type = DependencyTreeQueryApi
 }
