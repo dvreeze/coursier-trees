@@ -29,6 +29,31 @@ import org.scalatest.matchers.should.Matchers
  */
 class RichModuleTreeTest extends AnyFunSuite with Matchers {
 
+  test("testDepthFirst") {
+    val yaidomResolution = Resolve()
+      .addDependencies(dep"eu.cdevreeze.yaidom:yaidom_2.13:1.11.0")
+      .run()
+
+    val yaidomModTree: RichModuleTree =
+      RichModuleTree(ModuleTree.one(yaidomResolution, yaidomResolution.rootDependencies.head))
+
+    val allModules: Seq[Module] = yaidomModTree.findAllDescendantsOrSelf.map(_.module)
+
+    val expectedModules: Seq[Module] = List(
+      mod"eu.cdevreeze.yaidom:yaidom_2.13",
+      mod"com.github.ben-manes.caffeine:caffeine",
+      mod"com.google.errorprone:error_prone_annotations",
+      mod"org.checkerframework:checker-qual",
+      mod"com.google.code.findbugs:jsr305",
+      mod"net.sf.saxon:Saxon-HE",
+      mod"org.scala-lang:scala-library",
+      mod"org.scala-lang.modules:scala-xml_2.13",
+      mod"org.scala-lang:scala-library",
+    )
+
+    (allModules should contain).theSameElementsInOrderAs(expectedModules)
+  }
+
   test("testFindDuplicateModules") {
     val yaidomResolution = Resolve()
       .addDependencies(dep"eu.cdevreeze.yaidom:yaidom_2.13:1.11.0")
