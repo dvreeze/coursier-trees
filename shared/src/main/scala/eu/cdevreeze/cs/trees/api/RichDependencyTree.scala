@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.cs.trees.api
 
+import coursier.core.Dependency
 import coursier.graph.DependencyTree
 import eu.cdevreeze.cs.trees.internal.dependencytrees.DependencyTreeQueryApi
 
@@ -55,6 +56,14 @@ final case class RichDependencyTree(underlying: DependencyTree) extends AnyVal {
   def findDescendant(p: RichDependencyTree => Boolean): Option[RichDependencyTree] = {
     delegate.findDescendant(underlying, unwrapPredicate(p)).map(wrap)
   }
+
+  def dependency: Dependency = underlying.dependency
+
+  def excluded: Boolean = underlying.excluded
+
+  def reconciledVersion: String = underlying.reconciledVersion
+
+  def retainedVersion: String = underlying.retainedVersion
 
   private def wrap(tree: DependencyTree): RichDependencyTree = RichDependencyTree(tree)
 

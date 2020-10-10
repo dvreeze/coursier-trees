@@ -36,9 +36,9 @@ class RichModuleTreeTest extends AnyFunSuite {
       RichModuleTree(ModuleTree.one(yaidomResolution, yaidomResolution.rootDependencies.head))
 
     val scalaLibraryTrees: Seq[RichModuleTree] =
-      yaidomModTree.filterDescendants(_.underlying.module == mod"org.scala-lang:scala-library")
+      yaidomModTree.filterDescendants(_.module == mod"org.scala-lang:scala-library")
 
     assert(scalaLibraryTrees.size == 2)
-    assert(scalaLibraryTrees.map(_.underlying.retainedVersion).toSet == Set("2.13.2"))
+    assert(scalaLibraryTrees.map(_.retainedVersion).toSet == Set("2.13.2"))
   }
 }

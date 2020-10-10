@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.cs.trees.api
 
+import coursier.core.Module
 import coursier.graph.ModuleTree
 import eu.cdevreeze.cs.trees.internal.moduletrees.ModuleTreeQueryApi
 
@@ -55,6 +56,12 @@ final case class RichModuleTree(underlying: ModuleTree) extends AnyVal {
   def findDescendant(p: RichModuleTree => Boolean): Option[RichModuleTree] = {
     delegate.findDescendant(underlying, unwrapPredicate(p)).map(wrap)
   }
+
+  def module: Module = underlying.module
+
+  def reconciledVersion: String = underlying.reconciledVersion
+
+  def retainedVersion: String = underlying.retainedVersion
 
   private def wrap(tree: ModuleTree): RichModuleTree = RichModuleTree(tree)
 

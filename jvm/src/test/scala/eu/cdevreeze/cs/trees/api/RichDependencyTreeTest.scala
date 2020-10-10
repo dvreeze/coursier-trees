@@ -36,10 +36,10 @@ class RichDependencyTreeTest extends AnyFunSuite {
       RichDependencyTree(DependencyTree.one(yaidomResolution, yaidomResolution.rootDependencies.head))
 
     val scalaLibraryTrees: Seq[RichDependencyTree] =
-      yaidomDepTree.filterDescendants(_.underlying.dependency.module == mod"org.scala-lang:scala-library")
+      yaidomDepTree.filterDescendants(_.dependency.module == mod"org.scala-lang:scala-library")
 
     assert(scalaLibraryTrees.size == 2)
-    assert(scalaLibraryTrees.map(_.underlying.retainedVersion).toSet == Set("2.13.2"))
+    assert(scalaLibraryTrees.map(_.retainedVersion).toSet == Set("2.13.2"))
   }
 
   test("testFindVersionEvictions") {
@@ -51,17 +51,17 @@ class RichDependencyTreeTest extends AnyFunSuite {
       RichDependencyTree(DependencyTree.one(yaidomResolution, yaidomResolution.rootDependencies.head))
 
     val depTreesWithEviction: Seq[RichDependencyTree] =
-      yaidomDepTree.filterDescendantsOrSelf(t => t.underlying.dependency.version != t.underlying.retainedVersion)
+      yaidomDepTree.filterDescendantsOrSelf(t => t.dependency.version != t.retainedVersion)
 
     assert(depTreesWithEviction.size == 1)
-    assert(depTreesWithEviction.head.underlying.dependency.module == mod"org.scala-lang:scala-library")
-    assert(depTreesWithEviction.head.underlying.dependency.version == "2.13.0")
-    assert(depTreesWithEviction.head.underlying.reconciledVersion == "2.13.2")
-    assert(depTreesWithEviction.head.underlying.retainedVersion == "2.13.2")
+    assert(depTreesWithEviction.head.dependency.module == mod"org.scala-lang:scala-library")
+    assert(depTreesWithEviction.head.dependency.version == "2.13.0")
+    assert(depTreesWithEviction.head.reconciledVersion == "2.13.2")
+    assert(depTreesWithEviction.head.retainedVersion == "2.13.2")
 
     assert(
       yaidomDepTree
-        .findDescendant(_.underlying.dependency.moduleVersion == (mod"org.scala-lang:scala-library", "2.13.2"))
+        .findDescendant(_.dependency.moduleVersion == (mod"org.scala-lang:scala-library", "2.13.2"))
         .nonEmpty)
   }
 }
