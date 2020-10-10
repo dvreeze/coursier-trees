@@ -78,7 +78,7 @@ class RichDependencyTreeTest extends AnyFunSuite with Matchers {
       RichDependencyTree(DependencyTree.one(yaidomResolution, yaidomResolution.rootDependencies.head))
 
     val depTreesWithEviction: Seq[RichDependencyTree] =
-      yaidomDepTree.filterDescendantsOrSelf(t => !t.dependencyVersionEqualsRetainedVersion)
+      yaidomDepTree.filterDescendantsOrSelf(_.dependencyVersionDiffersFromRetainedVersion)
 
     (depTreesWithEviction should have).size(1)
     depTreesWithEviction.head.dependency.module shouldBe mod"org.scala-lang:scala-library"
