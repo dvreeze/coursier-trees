@@ -28,6 +28,8 @@ import eu.cdevreeze.cs.trees.internal.dependencytrees.DependencyTreeQueryApi
 final case class RichDependencyTree(underlying: DependencyTree) extends AnyVal {
 
   import RichDependencyTree.delegate
+  import RichDependencyTree.unwrapPredicate
+  import RichDependencyTree.wrap
 
   def findAllDescendantsOrSelf: Seq[RichDependencyTree] = {
     delegate.findAllDescendantsOrSelf(underlying).map(wrap)
@@ -64,15 +66,15 @@ final case class RichDependencyTree(underlying: DependencyTree) extends AnyVal {
   def reconciledVersion: String = underlying.reconciledVersion
 
   def retainedVersion: String = underlying.retainedVersion
+}
+
+object RichDependencyTree {
+
+  private val delegate: DependencyTreeQueryApi.type = DependencyTreeQueryApi
 
   private def wrap(tree: DependencyTree): RichDependencyTree = RichDependencyTree(tree)
 
   private def unwrapPredicate(p: RichDependencyTree => Boolean): DependencyTree => Boolean = { (tree: DependencyTree) =>
     p(wrap(tree))
   }
-}
-
-object RichDependencyTree {
-
-  private val delegate: DependencyTreeQueryApi.type = DependencyTreeQueryApi
 }
