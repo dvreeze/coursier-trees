@@ -73,6 +73,10 @@ final case class RichDependencyTree(underlying: DependencyTree) extends AnyVal w
   def reconciledVersion: String = underlying.reconciledVersion
 
   def retainedVersion: String = underlying.retainedVersion
+
+  def dependencyVersionEqualsReconciledVersion: Boolean = dependency.version == reconciledVersion
+
+  def dependencyVersionEqualsRetainedVersion: Boolean = dependency.version == retainedVersion
 }
 
 object RichDependencyTree {
