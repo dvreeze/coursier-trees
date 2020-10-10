@@ -14,12 +14,12 @@ dependency as follows (in an SBT or Maven build):
 
 **SBT**::
 
-    libraryDependencies += "eu.cdevreeze.coursier" %%% "coursier-trees" % "0.1.0"
+    libraryDependencies += "eu.cdevreeze.coursier-extra" %%% "coursier-trees" % "0.1.0"
 
 **Maven2**::
 
     <dependency>
-      <groupId>eu.cdevreeze.coursier</groupId>
+      <groupId>eu.cdevreeze.coursier-extra</groupId>
       <artifactId>coursier-trees_2.13</artifactId>
       <version>0.1.0</version>
     </dependency>
