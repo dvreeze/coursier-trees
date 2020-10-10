@@ -29,6 +29,8 @@ lazy val commonSettings = Seq(
 
   libraryDependencies += "io.get-coursier" %%% "coursier-core" % "2.0.2",
 
+  libraryDependencies += "io.get-coursier" %%% "coursier" % "2.0.2" % "test",
+
   libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.1" % "test",
 
   libraryDependencies += "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1" % "test"
