@@ -18,15 +18,15 @@ package eu.cdevreeze.cs.trees.api
 
 import coursier.core.Dependency
 import coursier.graph.DependencyTree
-import eu.cdevreeze.cs.trees.internal.dependencytrees.DependencyTreeQueryFunctionApi
-import eu.cdevreeze.cs.trees.internal.queryapi.TreeQueryApi
+import eu.cdevreeze.cs.trees.internal.dependencytrees.RichDependencyTreeFunctions
+import eu.cdevreeze.cs.trees.internal.queryapi.QueryableTreeApi
 
 /**
  * Wrapper for DependencyTree that enriches it with the tree query API.
  *
  * @author Chris de Vreeze
  */
-final case class RichDependencyTree(underlying: DependencyTree) extends AnyVal with TreeQueryApi {
+final case class RichDependencyTree(underlying: DependencyTree) extends AnyVal with QueryableTreeApi {
 
   import RichDependencyTree.delegate
   import RichDependencyTree.unwrapPredicate
@@ -85,7 +85,7 @@ final case class RichDependencyTree(underlying: DependencyTree) extends AnyVal w
 
 object RichDependencyTree {
 
-  private val delegate: DependencyTreeQueryFunctionApi.type = DependencyTreeQueryFunctionApi
+  private val delegate: RichDependencyTreeFunctions.type = RichDependencyTreeFunctions
 
   private def wrap(tree: DependencyTree): RichDependencyTree = RichDependencyTree(tree)
 

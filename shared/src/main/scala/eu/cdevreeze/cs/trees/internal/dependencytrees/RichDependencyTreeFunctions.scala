@@ -14,48 +14,48 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.cs.trees.internal.moduletrees
+package eu.cdevreeze.cs.trees.internal.dependencytrees
 
-import coursier.graph.ModuleTree
+import coursier.graph.DependencyTree
 import eu.cdevreeze.cs.trees.internal.queryapi.TreeQueryFunctionApi
 
 import scala.util.chaining._
 
 /**
- * Tree query API implementation for ModuleTree.
+ * Tree query function API implementation for DependencyTree.
  *
  * @author Chris de Vreeze
  */
-object ModuleTreeQueryFunctionApi extends TreeQueryFunctionApi[ModuleTree] {
+object RichDependencyTreeFunctions extends TreeQueryFunctionApi[DependencyTree] {
 
-  def findAllChildren(tree: ModuleTree): Seq[ModuleTree] = {
+  def findAllChildren(tree: DependencyTree): Seq[DependencyTree] = {
     tree.children
   }
 
-  def findAllDescendantsOrSelf(tree: ModuleTree): Seq[ModuleTree] = {
+  def findAllDescendantsOrSelf(tree: DependencyTree): Seq[DependencyTree] = {
     filterDescendantsOrSelf(tree, _ => true)
   }
 
-  def filterDescendantsOrSelf(tree: ModuleTree, p: ModuleTree => Boolean): Seq[ModuleTree] = {
+  def filterDescendantsOrSelf(tree: DependencyTree, p: DependencyTree => Boolean): Seq[DependencyTree] = {
     // Recursive calls
     findAllChildren(tree)
       .flatMap(e => filterDescendantsOrSelf(e, p))
       .pipe(descendants => if (p(tree)) descendants.prepended(tree) else descendants)
   }
 
-  def findAllDescendants(tree: ModuleTree): Seq[ModuleTree] = {
+  def findAllDescendants(tree: DependencyTree): Seq[DependencyTree] = {
     filterDescendants(tree, _ => true)
   }
 
-  def filterDescendants(tree: ModuleTree, p: ModuleTree => Boolean): Seq[ModuleTree] = {
+  def filterDescendants(tree: DependencyTree, p: DependencyTree => Boolean): Seq[DependencyTree] = {
     findAllChildren(tree).flatMap(e => filterDescendantsOrSelf(e, p))
   }
 
-  def findChild(tree: ModuleTree, p: ModuleTree => Boolean): Option[ModuleTree] = {
+  def findChild(tree: DependencyTree, p: DependencyTree => Boolean): Option[DependencyTree] = {
     tree.children.find(p)
   }
 
-  def findDescendantOrSelf(tree: ModuleTree, p: ModuleTree => Boolean): Option[ModuleTree] = {
+  def findDescendantOrSelf(tree: DependencyTree, p: DependencyTree => Boolean): Option[DependencyTree] = {
     if (p(tree)) {
       Some(tree)
     } else {
@@ -64,7 +64,7 @@ object ModuleTreeQueryFunctionApi extends TreeQueryFunctionApi[ModuleTree] {
     }
   }
 
-  def findDescendant(tree: ModuleTree, p: ModuleTree => Boolean): Option[ModuleTree] = {
+  def findDescendant(tree: DependencyTree, p: DependencyTree => Boolean): Option[DependencyTree] = {
     tree.children.view.flatMap(e => findDescendantOrSelf(e, p)).headOption
   }
 }

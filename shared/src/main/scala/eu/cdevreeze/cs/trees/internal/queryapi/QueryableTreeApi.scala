@@ -25,9 +25,9 @@ package eu.cdevreeze.cs.trees.internal.queryapi
  *
  * @author Chris de Vreeze
  */
-trait TreeQueryApi extends Any {
+trait QueryableTreeApi extends Any {
 
-  type E <: TreeQueryApi
+  type E <: QueryableTreeApi
 
   def findAllChildren: Seq[E]
 

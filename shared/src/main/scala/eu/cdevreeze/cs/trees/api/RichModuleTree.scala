@@ -18,15 +18,15 @@ package eu.cdevreeze.cs.trees.api
 
 import coursier.core.Module
 import coursier.graph.ModuleTree
-import eu.cdevreeze.cs.trees.internal.moduletrees.ModuleTreeQueryFunctionApi
-import eu.cdevreeze.cs.trees.internal.queryapi.TreeQueryApi
+import eu.cdevreeze.cs.trees.internal.moduletrees.RichModuleTreeFunctions
+import eu.cdevreeze.cs.trees.internal.queryapi.QueryableTreeApi
 
 /**
  * Wrapper for ModuleTree that enriches it with the tree query API.
  *
  * @author Chris de Vreeze
  */
-final case class RichModuleTree(underlying: ModuleTree) extends AnyVal with TreeQueryApi {
+final case class RichModuleTree(underlying: ModuleTree) extends AnyVal with QueryableTreeApi {
 
   import RichModuleTree.delegate
   import RichModuleTree.unwrapPredicate
@@ -75,7 +75,7 @@ final case class RichModuleTree(underlying: ModuleTree) extends AnyVal with Tree
 
 object RichModuleTree {
 
-  private val delegate: ModuleTreeQueryFunctionApi.type = ModuleTreeQueryFunctionApi
+  private val delegate: RichModuleTreeFunctions.type = RichModuleTreeFunctions
 
   private def wrap(tree: ModuleTree): RichModuleTree = RichModuleTree(tree)
 
