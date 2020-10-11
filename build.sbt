@@ -7,7 +7,7 @@ lazy val commonSettings = Seq(
   name         := "coursier-trees",
   description  := "Querying support for Coursier dependency trees and module trees",
   organization := "eu.cdevreeze.coursier-extra",
-  version      := "0.1.0-SNAPSHOT",
+  version      := "0.1.0",
 
   scalaVersion       := scalaVer,
 
