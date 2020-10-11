@@ -65,7 +65,45 @@ class RichModuleTreeTest extends AnyFunSuite with Matchers {
     val scalaLibraryTrees: Seq[RichModuleTree] =
       yaidomModTree.filterDescendants(_.module == mod"org.scala-lang:scala-library")
 
+    (scalaLibraryTrees.map(_.module).distinct should have).size(1)
     (scalaLibraryTrees.map(_.module) should have).size(2)
     scalaLibraryTrees.map(_.retainedVersion).toSet.loneElement shouldBe "2.13.2"
+  }
+
+  test("testQuerySameTreeFromDifferentResolutions") {
+    val yaidomResolution = Resolve()
+      .addDependencies(dep"eu.cdevreeze.yaidom:yaidom_2.13:1.11.0")
+      .run()
+
+    val yaidomModTree: RichModuleTree =
+      RichModuleTree(ModuleTree.one(yaidomResolution, yaidomResolution.rootDependencies.head))
+
+    val tqaResolution = Resolve()
+      .addDependencies(dep"eu.cdevreeze.tqa:tqa_2.13:0.8.18")
+      .run()
+
+    val tqaModTree: RichModuleTree =
+      RichModuleTree(ModuleTree.one(tqaResolution, tqaResolution.rootDependencies.head))
+
+    val foundYaidomModTree: RichModuleTree =
+      tqaModTree
+        .findDescendant(_.module == mod"eu.cdevreeze.yaidom:yaidom_2.13")
+        .ensuring(_.nonEmpty)
+        .get
+
+    foundYaidomModTree.findAllDescendantsOrSelf.map(_.module) shouldBe yaidomModTree.findAllDescendantsOrSelf.map(
+      _.module)
+
+    foundYaidomModTree
+      .filterDescendants(_.module == mod"org.scala-lang:scala-library")
+      .map(_.retainedVersion)
+      .toSet
+      .loneElement shouldBe "2.13.3"
+
+    tqaModTree
+      .filterDescendants(_.module == mod"org.scala-lang:scala-library")
+      .map(_.retainedVersion)
+      .toSet
+      .loneElement shouldBe "2.13.3"
   }
 }

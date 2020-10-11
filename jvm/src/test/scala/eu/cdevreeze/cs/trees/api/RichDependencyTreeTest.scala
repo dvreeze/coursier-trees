@@ -65,7 +65,8 @@ class RichDependencyTreeTest extends AnyFunSuite with Matchers {
     val scalaLibraryTrees: Seq[RichDependencyTree] =
       yaidomDepTree.filterDescendants(_.dependency.module == mod"org.scala-lang:scala-library")
 
-    (scalaLibraryTrees.map(_.dependency.moduleVersion) should have).size(2)
+    (scalaLibraryTrees.map(_.dependency.module).distinct should have).size(1)
+    (scalaLibraryTrees.map(_.dependency.moduleVersion).distinct should have).size(2)
     scalaLibraryTrees.map(_.retainedVersion).toSet.loneElement shouldBe "2.13.2"
   }
 
@@ -88,5 +89,42 @@ class RichDependencyTreeTest extends AnyFunSuite with Matchers {
 
     yaidomDepTree
       .findDescendant(_.dependency.moduleVersion == (mod"org.scala-lang:scala-library", "2.13.2")) should not be empty
+  }
+
+  test("testQuerySameTreeFromDifferentResolutions") {
+    val yaidomResolution = Resolve()
+      .addDependencies(dep"eu.cdevreeze.yaidom:yaidom_2.13:1.11.0")
+      .run()
+
+    val yaidomDepTree: RichDependencyTree =
+      RichDependencyTree(DependencyTree.one(yaidomResolution, yaidomResolution.rootDependencies.head))
+
+    val tqaResolution = Resolve()
+      .addDependencies(dep"eu.cdevreeze.tqa:tqa_2.13:0.8.18")
+      .run()
+
+    val tqaDepTree: RichDependencyTree =
+      RichDependencyTree(DependencyTree.one(tqaResolution, tqaResolution.rootDependencies.head))
+
+    val foundYaidomDepTree: RichDependencyTree =
+      tqaDepTree
+        .findDescendant(_.dependency.module == mod"eu.cdevreeze.yaidom:yaidom_2.13")
+        .ensuring(_.nonEmpty)
+        .get
+
+    foundYaidomDepTree.findAllDescendantsOrSelf.map(_.dependency.module) shouldBe yaidomDepTree.findAllDescendantsOrSelf
+      .map(_.dependency.module)
+
+    foundYaidomDepTree
+      .filterDescendants(_.dependency.module == mod"org.scala-lang:scala-library")
+      .map(_.retainedVersion)
+      .toSet
+      .loneElement shouldBe "2.13.3"
+
+    tqaDepTree
+      .filterDescendants(_.dependency.module == mod"org.scala-lang:scala-library")
+      .map(_.retainedVersion)
+      .toSet
+      .loneElement shouldBe "2.13.3"
   }
 }
