@@ -94,6 +94,12 @@ class RichModuleTreeTest extends AnyFunSuite with Matchers {
     foundYaidomModTree.findAllDescendantsOrSelf.map(_.module) shouldBe yaidomModTree.findAllDescendantsOrSelf.map(
       _.module)
 
+    yaidomModTree
+      .filterDescendants(_.module == mod"org.scala-lang:scala-library")
+      .map(_.retainedVersion)
+      .toSet
+      .loneElement shouldBe "2.13.2"
+
     foundYaidomModTree
       .filterDescendants(_.module == mod"org.scala-lang:scala-library")
       .map(_.retainedVersion)

@@ -115,6 +115,12 @@ class RichDependencyTreeTest extends AnyFunSuite with Matchers {
     foundYaidomDepTree.findAllDescendantsOrSelf.map(_.dependency.module) shouldBe yaidomDepTree.findAllDescendantsOrSelf
       .map(_.dependency.module)
 
+    yaidomDepTree
+      .filterDescendants(_.dependency.module == mod"org.scala-lang:scala-library")
+      .map(_.retainedVersion)
+      .toSet
+      .loneElement shouldBe "2.13.2"
+
     foundYaidomDepTree
       .filterDescendants(_.dependency.module == mod"org.scala-lang:scala-library")
       .map(_.retainedVersion)
